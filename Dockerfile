@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:latest as downloader
 
 ARG PB_VERSION=0.23.11
 
@@ -9,6 +9,10 @@ RUN apk add --no-cache \
 # download and unzip PocketBase
 ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/
+
+FROM scratch
+
+COPY --from=downloader /pb/pocketbase /pb/pocketbase
 
 EXPOSE 8080
 
